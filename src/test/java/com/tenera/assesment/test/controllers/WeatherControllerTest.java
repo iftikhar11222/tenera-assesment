@@ -43,18 +43,64 @@ public class WeatherControllerTest {
                 .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
                 .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
+
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin,DEU")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
+                .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
+                .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
+
+
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin , DE")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
+                .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
+                .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
     }
 
 
     @Test
-    @DisplayName("should fail and throw constraint violation exception if invalid location format")
+    @DisplayName("should fail and return error response if invalid location format")
     public void testCurrentWeatherFailureIfInvalidLocationFormat() throws Exception {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Ber123,DE,,")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message",is("Invalid Request")));
 
+
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,",DE,,")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Invalid Request")));
+
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Invalid Request")));
+
+
+
+
     }
+    @Test
+    @DisplayName("Should fail and return error response if the special character or opposite order")
+    public void testCurrentWeatherFailureIfInvalidOrder() throws Exception {
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"B@rlin,DE")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Invalid Request")));
+
+
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"DE,Berlin")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message",is("Invalid Request")));
+    }
+
+
+
 
 
 
