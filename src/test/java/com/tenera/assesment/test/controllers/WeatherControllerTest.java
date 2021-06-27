@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -34,16 +35,17 @@ public class WeatherControllerTest {
     @Test
     @DisplayName("should return success if valid location is provided in query params")
     public void testCurrentWeatherSuccessIfValidLocation() throws Exception {
+      //  doReturn(Optional.of(weatherDTO)).when(weatherService).getWeatherByLocation("Berlin,DE");
 
         WeatherDTO weatherDTO = new WeatherDTO(100,1000,false);
-        doReturn(weatherDTO).when(weatherService).getCurrentWeatherByCity("Berlin,DE");
+        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin,DE");
        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin,DE")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
                 .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
-
+        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin,DEU");
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin,DEU")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -51,7 +53,7 @@ public class WeatherControllerTest {
                 .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
 
-
+        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin , DE");
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin , DE")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
