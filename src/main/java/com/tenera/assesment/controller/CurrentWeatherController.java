@@ -19,6 +19,7 @@ import static com.tenera.assesment.controller.ApiConstants.*;
 @RestController
 @RequestMapping(ApiConstants.CONTROLLER_BASE_URI + CURRENT_WEATHER_URI)
 @Validated
+
 public class CurrentWeatherController {
     private WeatherService weatherService;
 
