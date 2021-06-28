@@ -5,7 +5,7 @@ import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.mapper.GeoCodingResponseMapper;
-import com.tenera.assesment.mapper.WeatherResponseMapper;
+import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
 import com.tenera.assesment.remote.CoordinatesProvider;
 import com.tenera.assesment.remote.WeatherInfoProvider;
 import com.tenera.assesment.service.WeatherService;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.doThrow;
     @MockBean private CoordinatesProvider coordinatesProvider;
     @MockBean private WeatherInfoProvider weatherInfoProvider;
     @MockBean private GeoCodingResponseMapper geoCodingResponseMapper;
-    @MockBean private WeatherResponseMapper weatherResponseMapper;
+    @MockBean private IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper;
 
     @DisplayName("should return current weather data when valid location is passed")
     @ParameterizedTest
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.doThrow;
         doReturn(locationJson).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
         doReturn(Optional.of(coordinateInfo)).when(geoCodingResponseMapper).mapJsonToGeoCodingDTO(locationJson);
         doReturn(weatherJson).when(weatherInfoProvider).getCurrentWeatherInfo(coordinateInfo.getLatitude(),coordinateInfo.getLongitude());
-        doReturn(Optional.of(weatherDTO)).when(weatherResponseMapper).mapJsonToWeatherDTO(weatherJson);
+        doReturn(Optional.of(weatherDTO)).when(IRemoteWeatherApiResponseMapper).mapJsonToWeatherDTO(weatherJson);
         Optional<WeatherDTO> resultDTO = weatherService.getCurrentWeatherByCity("Berlin,DE");
         assertTrue(resultDTO.isPresent());
         assertSame(weatherDTO,resultDTO.get());
@@ -86,7 +86,7 @@ import static org.mockito.Mockito.doThrow;
         doReturn(locationJson).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
         doReturn(Optional.of(coordinateInfo)).when(geoCodingResponseMapper).mapJsonToGeoCodingDTO(locationJson);
         doReturn(weatherJson).when(weatherInfoProvider).getHistoricalWeatherInfo(coordinateInfo.getLatitude(),coordinateInfo.getLongitude());
-        doReturn(Optional.of(weatherDTO)).when(weatherResponseMapper).mapJsonToWeatherHistoryDTO(weatherJson);
+        doReturn(Optional.of(weatherDTO)).when(IRemoteWeatherApiResponseMapper).mapJsonToWeatherHistoryDTO(weatherJson);
 
         Optional<WeatherHistoryDTO> resultDTO = weatherService.getWeatherHistoryByLocation("Berlin,DE");
         assertTrue(resultDTO.isPresent());

@@ -5,7 +5,7 @@ import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.mapper.GeoCodingResponseMapper;
-import com.tenera.assesment.mapper.WeatherResponseMapper;
+import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
 import com.tenera.assesment.remote.CoordinatesProvider;
 import com.tenera.assesment.remote.WeatherInfoProvider;
 import com.tenera.assesment.service.WeatherService;
@@ -22,7 +22,7 @@ public class WeatherServiceImpl implements WeatherService {
     private CoordinatesProvider coordinatesProvider;
     private WeatherInfoProvider weatherInfoProvider;
     private GeoCodingResponseMapper geoCodingResponseMapper;
-    private WeatherResponseMapper weatherResponseMapper ;
+    private IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper;
 
     @Override
     public Optional<WeatherDTO> getCurrentWeatherByCity(String location) {
@@ -34,7 +34,7 @@ public class WeatherServiceImpl implements WeatherService {
                        .orElseThrow(()->new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
 
        var weatherInfoJSON= weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
-       return weatherResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
+       return IRemoteWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
     }
 
 
@@ -50,7 +50,7 @@ public class WeatherServiceImpl implements WeatherService {
                 .orElseThrow(()->new InvalidCityNameOrCountryCodeException
                         ("Invalid City name or Country Code"));
         var weatherInfoJSON= weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
-        return weatherResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
+        return IRemoteWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
     }
 
 
@@ -73,8 +73,8 @@ public class WeatherServiceImpl implements WeatherService {
     }
     @Autowired
     @Lazy
-    public void setWeatherResponseMapper(WeatherResponseMapper weatherResponseMapper) {
-        this.weatherResponseMapper = weatherResponseMapper;
+    public void setWeatherResponseMapper(IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper) {
+        this.IRemoteWeatherApiResponseMapper = IRemoteWeatherApiResponseMapper;
     }
 
     private GeoCodeInfoDTO getCityNameAndCountryCode(String location) {

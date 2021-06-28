@@ -5,7 +5,7 @@ import com.tenera.assesment.dto.WeatherHistoryDTO;
 
 import java.util.Optional;
 
-public interface WeatherResponseMapper {
+public interface IRemoteWeatherApiResponseMapper {
     Optional<WeatherDTO> mapJsonToWeatherDTO(String json);
 
     Optional<WeatherHistoryDTO> mapJsonToWeatherHistoryDTO(String weatherInfoJSON);
