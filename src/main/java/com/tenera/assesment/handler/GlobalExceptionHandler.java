@@ -1,6 +1,6 @@
 package com.tenera.assesment.handler;
 
-import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCode;
+import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var errorDetails = new ErrorDetails("System Error",500);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
     }
-    @ExceptionHandler(InvalidCityNameOrCountryCode.class)
-    public ResponseEntity<ErrorDetails> handleInvalidCityNameOrCountryCode(InvalidCityNameOrCountryCode ex){
+    @ExceptionHandler(InvalidCityNameOrCountryCodeException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidCityNameOrCountryCode(InvalidCityNameOrCountryCodeException ex){
         log.error("",ex);
         var errorDetails = new ErrorDetails(ex.getMessage(),400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);

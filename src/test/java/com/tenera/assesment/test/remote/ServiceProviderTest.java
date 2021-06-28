@@ -1,13 +1,12 @@
 package com.tenera.assesment.test.remote;
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
-import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCode;
+import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.remote.CoordinatesProvider;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -75,8 +74,8 @@ class ServiceProviderTest {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder()
                 .cityName("").countryCode("DE").build();
 
-       Throwable exceptionMessage= assertThrows(InvalidCityNameOrCountryCode.class,()->coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO));
-       assertEquals("Wrong city or country name",exceptionMessage.getMessage());
+       Throwable exceptionMessage= assertThrows(InvalidCityNameOrCountryCodeException.class,()->coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO));
+       assertEquals("Wrong/Invalid city name or country code.",exceptionMessage.getMessage());
 
 
     }

@@ -1,6 +1,7 @@
 package com.tenera.assesment.remote.impl;
 
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
+import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.remote.CoordinatesProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,20 +26,24 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
 
     @Override
     public String getGeocodeInfoByLocation(GeoCodeInfoDTO info) {
+
         var countryCode = validateCountryCode(info.getCountryCode());
+        if(isEmptyOrNull(countryCode) || isEmptyOrNull(info.getCityName())){
+            throw new InvalidCityNameOrCountryCodeException("Wrong/Invalid city name or country code.");
+        }
         var url = buildLocationUrl(info.getCityName(), countryCode);
         var response = restTemplate.getForEntity(url, String.class);
         return response.getBody();
     }
 
     private String validateCountryCode(String countryCode) {
-        if (isNotNullOrEmpty(countryCode)) {
-        return convertCountryAlph3ToAlpha2(countryCode);
+        if (!isEmptyOrNull(countryCode)) {
+        return convertCountryAlpha3ToAlpha2(countryCode);
         }
         return "";
     }
 
-    private String convertCountryAlph3ToAlpha2(String countryCode) {
+    private String convertCountryAlpha3ToAlpha2(String countryCode) {
         if(countryCode.length()==2) return countryCode;
        return isoCountryCodes.get(countryCode);
     }
@@ -59,8 +64,8 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
         }
 
 
-    private boolean isNotNullOrEmpty(String countryCode) {
-        return countryCode!=null && !countryCode.trim().isEmpty();
+    private boolean isEmptyOrNull(String countryCode) {
+        return countryCode==null || countryCode.trim().isEmpty();
 
     }
     @Autowired

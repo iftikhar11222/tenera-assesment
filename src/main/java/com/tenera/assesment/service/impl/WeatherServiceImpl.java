@@ -3,7 +3,7 @@ package com.tenera.assesment.service.impl;
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
-import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCode;
+import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.mapper.GeoCodingResponseMapper;
 import com.tenera.assesment.mapper.WeatherResponseMapper;
 import com.tenera.assesment.remote.CoordinatesProvider;
@@ -31,7 +31,7 @@ public class WeatherServiceImpl implements WeatherService {
        var geoCodeInfoDTO =
                geoCodingResponseMapper.
                        mapJsonToGeoCodingDTO(geoCodeInfoJSON)
-                       .orElseThrow(()->new InvalidCityNameOrCountryCode("Invalid City Name or Country Code "));
+                       .orElseThrow(()->new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
 
        var weatherInfoJSON= weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
        return weatherResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
@@ -47,7 +47,7 @@ public class WeatherServiceImpl implements WeatherService {
     public Optional<WeatherHistoryDTO> getWeatherHistoryByLocation(String location) {
         var geoCodeInfoJSON  =coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
         var geoCodeInfoDTO =geoCodingResponseMapper.mapJsonToGeoCodingDTO(geoCodeInfoJSON)
-                .orElseThrow(()->new InvalidCityNameOrCountryCode
+                .orElseThrow(()->new InvalidCityNameOrCountryCodeException
                         ("Invalid City name or Country Code"));
         var weatherInfoJSON= weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
         return weatherResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);

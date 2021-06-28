@@ -3,7 +3,7 @@ package com.tenera.assesment.test.services;
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
-import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCode;
+import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
 import com.tenera.assesment.mapper.GeoCodingResponseMapper;
 import com.tenera.assesment.mapper.WeatherResponseMapper;
 import com.tenera.assesment.remote.CoordinatesProvider;
@@ -68,11 +68,11 @@ import static org.mockito.Mockito.doThrow;
         var cityName = "Berlin";
         var countryNameWrong = "ADZ";
         GeoCodeInfoDTO coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityNameWrong).countryCode(countryName).build();
-        doThrow(new InvalidCityNameOrCountryCode("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
-        assertThrows(InvalidCityNameOrCountryCode.class,()->weatherService.getCurrentWeatherByCity(cityNameWrong+","+countryName));
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getCurrentWeatherByCity(cityNameWrong+","+countryName));
          coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityName).countryCode(countryNameWrong).build();
-        doThrow(new InvalidCityNameOrCountryCode("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
-        Throwable ex =  assertThrows(InvalidCityNameOrCountryCode.class,()->weatherService.getCurrentWeatherByCity(cityName+","+countryNameWrong));
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        Throwable ex =  assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getCurrentWeatherByCity(cityName+","+countryNameWrong));
         assertEquals("Wrong City Name or Country Code",ex.getMessage());
     }
 
@@ -104,11 +104,11 @@ import static org.mockito.Mockito.doThrow;
         var cityName = "Berlin";
         var countryNameWrong = "ADZ";
         GeoCodeInfoDTO coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityNameWrong).countryCode(countryName).build();
-        doThrow(new InvalidCityNameOrCountryCode("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
-        assertThrows(InvalidCityNameOrCountryCode.class,()->weatherService.getWeatherHistoryByLocation(cityNameWrong+","+countryName));
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getWeatherHistoryByLocation(cityNameWrong+","+countryName));
         coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityName).countryCode(countryNameWrong).build();
-        doThrow(new InvalidCityNameOrCountryCode("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
-        Throwable ex =  assertThrows(InvalidCityNameOrCountryCode.class,()->weatherService.getWeatherHistoryByLocation(cityName+","+countryNameWrong));
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        Throwable ex =  assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getWeatherHistoryByLocation(cityName+","+countryNameWrong));
         assertEquals("Wrong City Name or Country Code",ex.getMessage());
     }
 
