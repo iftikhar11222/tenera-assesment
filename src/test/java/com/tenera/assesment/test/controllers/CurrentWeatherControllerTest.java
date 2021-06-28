@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CurrentWeatherControllerTest {
+ class CurrentWeatherControllerTest {
 
 
     public static final String LOCATION_BERLIN_DE = "Berlin,DE";

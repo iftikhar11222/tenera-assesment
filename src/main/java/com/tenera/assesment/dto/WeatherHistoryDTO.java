@@ -1,7 +1,6 @@
 package com.tenera.assesment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,17 +29,17 @@ public class WeatherHistoryDTO {
     List<WeatherDTO> history;
 
     private void calculateAveragePressure() {
-        if(history!=null && history.size()>0){
+        if(history!=null && !history.isEmpty()){
             this.averagePressure=  (int) this.history.stream()
-                    .mapToInt(node->node.getPressure())
+                    .mapToInt(WeatherDTO::getPressure)
                     .average().getAsDouble();
         }
     }
 
     private void calculateAverageTemperature() {
-        if(history!=null && history.size()>0){
+        if(history!=null && !history.isEmpty()){
             this.averageTemperature=(int) this.history.stream()
-                    .mapToInt(node->node.getTemperature())
+                    .mapToInt(WeatherDTO::getTemperature)
                     .average().getAsDouble();
         }
 

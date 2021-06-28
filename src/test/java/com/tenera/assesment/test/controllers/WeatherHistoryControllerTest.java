@@ -32,9 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WeatherHistoryControllerTest {
+ class WeatherHistoryControllerTest {
     public static final String LOCATION_BERLIN_DE = "Berlin,DE";
     public static final String INVALID_REQUEST_MESSAGE = "Invalid Request";
+    private static final String JSON_FIELD_AVERAGE_TEMPERATURE = "$.average_temperature";
+    private static final String JSON_FIELD_AVERAGE_PRESSURE = "$.average_pressure";
+    private static final String $_HISTORY = "$.history";
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,8 +56,8 @@ public class WeatherHistoryControllerTest {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.WEATHER_HISTORY_URI,LOCATION_BERLIN_DE)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.average_temperature",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.average_pressure",is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_FIELD_AVERAGE_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_AVERAGE_PRESSURE,is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.history",is(instanceOf(List.class))));
 
 
@@ -62,8 +65,8 @@ public class WeatherHistoryControllerTest {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.WEATHER_HISTORY_URI,"Berlin,DEU")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.average_temperature",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.average_pressure",is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_FIELD_AVERAGE_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_AVERAGE_PRESSURE,is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.history",is(instanceOf(List.class))));
 
 
@@ -72,16 +75,16 @@ public class WeatherHistoryControllerTest {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.WEATHER_HISTORY_URI,"Berlin , DE")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.average_temperature",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.average_pressure",is(instanceOf(Integer.class))))
-                .andExpect(jsonPath("$.history",is(instanceOf(List.class))));
+                .andExpect(jsonPath(JSON_FIELD_AVERAGE_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_AVERAGE_PRESSURE,is(instanceOf(Integer.class))))
+                .andExpect(jsonPath($_HISTORY,is(instanceOf(List.class))));
 
         doReturn(Optional.of(weatherHistoryDTO)).when(weatherService).getWeatherHistoryByLocation("Berlin");
         mockMvc.perform(get(MessageFormat.format(ApiConstants.WEATHER_HISTORY_URI,"Berlin")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.average_temperature",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.average_pressure",is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_FIELD_AVERAGE_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_AVERAGE_PRESSURE,is(instanceOf(Integer.class))))
                 .andExpect(jsonPath("$.history",is(instanceOf(List.class))));
 
     }
@@ -89,7 +92,7 @@ public class WeatherHistoryControllerTest {
     @DisplayName("Should show correct average temp and average pressure")
     @ParameterizedTest
     @MethodSource("weatherDTOListProvider")
-    public void testAverageTempAndPressureFromHistory(List<WeatherDTO> weatherDTOList) throws Exception {
+     void testAverageTempAndPressureFromHistory(List<WeatherDTO> weatherDTOList) throws Exception {
         var weatherHistoryDTO = new WeatherHistoryDTO(weatherDTOList);
         doReturn(Optional.of(weatherHistoryDTO)).when(weatherService).getWeatherHistoryByLocation(LOCATION_BERLIN_DE);
         var averageTemp = (weatherDTOList.stream().map(item->item.getTemperature()).reduce(0,Integer::sum))/weatherDTOList.size();
@@ -97,8 +100,8 @@ public class WeatherHistoryControllerTest {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.WEATHER_HISTORY_URI,LOCATION_BERLIN_DE)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.average_temperature",is(averageTemp)))
-                .andExpect( jsonPath("$.average_pressure",is(averagePressure)));
+                .andExpect(jsonPath(JSON_FIELD_AVERAGE_TEMPERATURE,is(averageTemp)))
+                .andExpect( jsonPath(JSON_FIELD_AVERAGE_PRESSURE,is(averagePressure)));
     }
 
 
@@ -156,7 +159,7 @@ public class WeatherHistoryControllerTest {
     }
 
 
-    public static Stream<Arguments> weatherDTOListProvider(){
+    private static Stream<Arguments> weatherDTOListProvider(){
         return Stream.of(
                 Arguments.arguments(List.of(new WeatherDTO(1010,90,false),
                         new WeatherDTO(1005,85,false),
