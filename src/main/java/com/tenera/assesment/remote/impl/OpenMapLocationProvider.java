@@ -18,7 +18,7 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
     @Value("${location.api}")
     private String locationAPIBaseUrl;
     @Value("${api.id}")
-    private String ApiId;
+    private String apiId;
 
     private RestTemplate restTemplate;
 
@@ -28,7 +28,7 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
     public String getGeocodeInfoByLocation(GeoCodeInfoDTO info) {
 
         var countryCode = validateCountryCode(info.getCountryCode());
-        if(isEmptyOrNull(countryCode) || isEmptyOrNull(info.getCityName())){
+        if( isEmptyOrNull(info.getCityName())){
             throw new InvalidCityNameOrCountryCodeException("Wrong/Invalid city name or country code.");
         }
         var url = buildLocationUrl(info.getCityName(), countryCode);
@@ -49,13 +49,13 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
     }
 
     private String buildLocationUrl (String city, String country){
-            String URI = UriComponentsBuilder.newInstance()
+           return UriComponentsBuilder.newInstance()
                     .scheme("http").host(locationAPIBaseUrl).pathSegment()
                     .queryParam("q", city + ",", ",", country)
-                    .queryParam("appid", ApiId)
+                    .queryParam("appid", apiId)
                     .build().toUriString();
 
-            return URI;
+
         }
 
         @Autowired
