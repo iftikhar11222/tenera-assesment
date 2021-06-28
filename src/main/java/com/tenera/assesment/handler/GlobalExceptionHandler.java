@@ -15,8 +15,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorDetails> handleInvalidRequestException(ConstraintViolationException exception){
-        ErrorDetails errorDetails = new ErrorDetails("Invalid Request",400);
+        var errorDetails = new ErrorDetails("Invalid Request",400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+
+    }
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidRequestException(RuntimeException exception){
+        var errorDetails = new ErrorDetails("System Error",500);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
 
     }
 }

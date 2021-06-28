@@ -26,61 +26,68 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WeatherControllerTest {
+public class CurrentWeatherControllerTest {
 
 
-   @Autowired private MockMvc mockMvc;
+    public static final String LOCATION_BERLIN_DE = "Berlin,DE";
+    public static final String JSON_FIELD_PRESSURE = "$.pressure";
+    public static final String JSON_FIELD_TEMPERATURE = "$.temperature";
+    public static final String JSON_PATH_FIELD_UMBRELLA = "$.umbrella";
+    public static final String LOCATION_BERLIN_DEU = "Berlin,DEU";
+    public static final String JSON_FIELD_MESSAGE = "$.message";
+    public static final String INVALID_REQUEST_MESSAGE = "Invalid Request";
+    @Autowired private MockMvc mockMvc;
    @MockBean private WeatherService weatherService;
 
     @Test
     @DisplayName("should return success if valid location is provided in query params")
-    public void testCurrentWeatherSuccessIfValidLocation() throws Exception {
-      //  doReturn(Optional.of(weatherDTO)).when(weatherService).getWeatherByLocation("Berlin,DE");
+     void testCurrentWeatherSuccessIfValidLocation() throws Exception {
+        var weatherDTO = new WeatherDTO(100,1000,false);
+        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity(LOCATION_BERLIN_DE);
+       mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,LOCATION_BERLIN_DE)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(JSON_FIELD_PRESSURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_PATH_FIELD_UMBRELLA,is(instanceOf(Boolean.class))));
 
-        WeatherDTO weatherDTO = new WeatherDTO(100,1000,false);
-        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin,DE");
-       mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin,DE")))
+        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity(LOCATION_BERLIN_DEU);
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,LOCATION_BERLIN_DEU)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
-                .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
-        doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin,DEU");
-        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin,DEU")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
-                .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
+                .andExpect(jsonPath(JSON_FIELD_PRESSURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_PATH_FIELD_UMBRELLA,is(instanceOf(Boolean.class))));
 
         doReturn(Optional.of(weatherDTO)).when(weatherService).getCurrentWeatherByCity("Berlin , DE");
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Berlin , DE")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.pressure",is(instanceOf(Integer.class))))
-                .andExpect( jsonPath("$.temperature",is(instanceOf(Integer.class))))
-                .andExpect(jsonPath("$.umbrella",is(instanceOf(Boolean.class))));
+                .andExpect(jsonPath(JSON_FIELD_PRESSURE,is(instanceOf(Integer.class))))
+                .andExpect( jsonPath(JSON_FIELD_TEMPERATURE,is(instanceOf(Integer.class))))
+                .andExpect(jsonPath(JSON_PATH_FIELD_UMBRELLA,is(instanceOf(Boolean.class))));
     }
+
 
 
     @Test
     @DisplayName("should fail and return error response if invalid location format")
-    public void testCurrentWeatherFailureIfInvalidLocationFormat() throws Exception {
+     void testCurrentWeatherFailureIfInvalidLocationFormat() throws Exception {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Ber123,DE,,")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message",is("Invalid Request")));
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is(INVALID_REQUEST_MESSAGE)));
 
 
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,",DE,,")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message",is("Invalid Request")));
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is(INVALID_REQUEST_MESSAGE)));
 
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message",is("Invalid Request")));
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is(INVALID_REQUEST_MESSAGE)));
 
 
 
@@ -88,22 +95,31 @@ public class WeatherControllerTest {
     }
     @Test
     @DisplayName("Should fail and return error response if the special character or opposite order")
-    public void testCurrentWeatherFailureIfInvalidOrder() throws Exception {
+     void testCurrentWeatherFailureIfInvalidOrder() throws Exception {
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"B@rlin,DE")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message",is("Invalid Request")));
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is(INVALID_REQUEST_MESSAGE)));
 
 
         mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"DE,Berlin")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message",is("Invalid Request")));
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is(INVALID_REQUEST_MESSAGE)));
     }
 
 
+    @Test
+    @DisplayName("If service return empty or null response should return server error")
+     void testCurrentWeatherFailureIfServiceReturnsNull() throws Exception {
+        doReturn(Optional.ofNullable(null)).when(weatherService).getCurrentWeatherByCity("Kabul,AF");
 
+        mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"Kabul,AF")))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(JSON_FIELD_MESSAGE,is("System Error")));
 
+    }
 
 
 }
