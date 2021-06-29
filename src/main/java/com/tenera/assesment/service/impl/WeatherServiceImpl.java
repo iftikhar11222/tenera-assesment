@@ -23,7 +23,7 @@ public class WeatherServiceImpl implements WeatherService {
     private LocationProvider locationProvider;
     private WeatherInfoProvider weatherInfoProvider;
     private LocationAPIResponseMapper geoCodingResponseMapper;
-    private ExternalWeatherApiResponseMapper ExternalWeatherApiResponseMapper;
+    private ExternalWeatherApiResponseMapper externalWeatherApiResponseMapper;
 
     @Override
     public Optional<WeatherDTO> getCurrentWeatherByCity(String location) {
@@ -35,7 +35,7 @@ public class WeatherServiceImpl implements WeatherService {
                         .orElseThrow(() -> new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
 
         var weatherInfoJSON = weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
-        return ExternalWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
+        return externalWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
     }
 
 
@@ -46,7 +46,7 @@ public class WeatherServiceImpl implements WeatherService {
                 .orElseThrow(() -> new InvalidCityNameOrCountryCodeException
                         ("Invalid City name or Country Code"));
         var weatherInfoJSON = weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
-        return ExternalWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
+        return externalWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
     }
 
 
@@ -71,7 +71,7 @@ public class WeatherServiceImpl implements WeatherService {
     @Autowired
     @Lazy
     public void setWeatherResponseMapper(ExternalWeatherApiResponseMapper ExternalWeatherApiResponseMapper) {
-        this.ExternalWeatherApiResponseMapper = ExternalWeatherApiResponseMapper;
+        this.externalWeatherApiResponseMapper = ExternalWeatherApiResponseMapper;
     }
 
     private GeoCodeInfoDTO getCityNameAndCountryCode(String location) {
