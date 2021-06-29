@@ -22,13 +22,13 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
 
     private RestTemplate restTemplate;
 
-    Map<String,String> isoCountryCodes;
+    Map<String, String> isoCountryCodes;
 
     @Override
     public String getGeocodeInfoByLocation(GeoCodeInfoDTO info) {
 
         var countryCode = validateCountryCode(info.getCountryCode());
-        if( isEmptyOrNull(info.getCityName())){
+        if (isEmptyOrNull(info.getCityName())) {
             throw new InvalidCityNameOrCountryCodeException("Wrong/Invalid city name or country code.");
         }
         var url = buildLocationUrl(info.getCityName(), countryCode);
@@ -38,36 +38,37 @@ public class OpenMapLocationProvider implements CoordinatesProvider {
 
     private String validateCountryCode(String countryCode) {
         if (!isEmptyOrNull(countryCode)) {
-        return convertCountryAlpha3ToAlpha2(countryCode);
+            return convertCountryAlpha3ToAlpha2(countryCode);
         }
         return "";
     }
 
     private String convertCountryAlpha3ToAlpha2(String countryCode) {
-        if(countryCode.length()==2) return countryCode;
-       return isoCountryCodes.get(countryCode);
+        if (countryCode.length() == 2) return countryCode;
+        return isoCountryCodes.get(countryCode);
     }
 
-    private String buildLocationUrl (String city, String country){
-           return UriComponentsBuilder.newInstance()
-                    .scheme("http").host(locationAPIBaseUrl).pathSegment()
-                    .queryParam("q", city + ",", ",", country)
-                    .queryParam("appid", apiId)
-                    .build().toUriString();
+    private String buildLocationUrl(String city, String country) {
+        return UriComponentsBuilder.newInstance()
+                .scheme("http").host(locationAPIBaseUrl).pathSegment()
+                .queryParam("q", city + ",", ",", country)
+                .queryParam("appid", apiId)
+                .build().toUriString();
 
 
-        }
+    }
 
-        @Autowired
-        public void setRestTemplate (RestTemplate restTemplate){
-            this.restTemplate = restTemplate;
-        }
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
 
     private boolean isEmptyOrNull(String countryCode) {
-        return countryCode==null || countryCode.trim().isEmpty();
+        return countryCode == null || countryCode.trim().isEmpty();
 
     }
+
     @Autowired
     @Qualifier("isoCountryCodes")
     public void setIsoCountryCodes(Map<String, String> isoCountryCodes) {

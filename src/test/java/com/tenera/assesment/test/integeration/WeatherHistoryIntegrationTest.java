@@ -1,19 +1,14 @@
 package com.tenera.assesment.test.integeration;
 
-import com.tenera.assesment.dto.WeatherDTO;
-import com.tenera.assesment.dto.WeatherHistoryDTO;
-import com.tenera.assesment.service.WeatherService;
 import com.tenera.assesment.test.controllers.ApiConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,12 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class WeatherHistoryIntegrationTest {
+ class WeatherHistoryIntegrationTest {
 
 
 
@@ -113,7 +106,7 @@ public class WeatherHistoryIntegrationTest {
     }
     @Test
     @DisplayName("should fail and return when no city name passed")
-    public void testShouldFailWhenEmptyParams() throws Exception {
+     void testShouldFailWhenEmptyParams() throws Exception {
 
     mockMvc.perform(get(MessageFormat.format(ApiConstants.CURRENT_WEATHER_URI,"")))
             .andExpect(status().isBadRequest())

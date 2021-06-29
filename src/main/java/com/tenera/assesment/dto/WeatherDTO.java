@@ -16,5 +16,4 @@ public class WeatherDTO {
     private boolean umbrella;
 
 
-
 }

@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface GeoCodingResponseMapper {
 
-     Optional<GeoCodeInfoDTO> mapJsonToGeoCodingDTO(String json);
+    Optional<GeoCodeInfoDTO> mapJsonToGeoCodingDTO(String json);
 }

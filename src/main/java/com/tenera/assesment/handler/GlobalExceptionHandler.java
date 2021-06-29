@@ -17,23 +17,24 @@ import javax.validation.ConstraintViolationException;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorDetails> handleRuntimeException(ConstraintViolationException exception){
-        log.error(" ",exception);
-        var errorDetails = new ErrorDetails("Invalid Request",400);
+    public ResponseEntity<ErrorDetails> handleRuntimeException(ConstraintViolationException exception) {
+        log.error(" ", exception);
+        var errorDetails = new ErrorDetails("Invalid Request", 400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
 
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorDetails> handleRuntimeException(RuntimeException exception){
-        log.error(" ",exception);
-        var errorDetails = new ErrorDetails("System Error",500);
+    public ResponseEntity<ErrorDetails> handleRuntimeException(RuntimeException exception) {
+        log.error(" ", exception);
+        var errorDetails = new ErrorDetails("System Error", 500);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
     }
+
     @ExceptionHandler(InvalidCityNameOrCountryCodeException.class)
-    public ResponseEntity<ErrorDetails> handleInvalidCityNameOrCountryCode(InvalidCityNameOrCountryCodeException ex){
-        log.error("",ex);
-        var errorDetails = new ErrorDetails(ex.getMessage(),400);
+    public ResponseEntity<ErrorDetails> handleInvalidCityNameOrCountryCode(InvalidCityNameOrCountryCodeException ex) {
+        log.error("", ex);
+        var errorDetails = new ErrorDetails(ex.getMessage(), 400);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 }

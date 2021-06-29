@@ -17,16 +17,17 @@ import javax.validation.constraints.Pattern;
 import static com.tenera.assesment.controller.ApiConstants.WEATHER_HISTORY_URI;
 
 @RestController
-@RequestMapping(ApiConstants.CONTROLLER_BASE_URI+WEATHER_HISTORY_URI)
+@RequestMapping(ApiConstants.CONTROLLER_BASE_URI + WEATHER_HISTORY_URI)
 @Validated
 public class WeatherHistoryController {
 
     private WeatherService weatherService;
+
     @GetMapping("")
     public ResponseEntity<WeatherHistoryDTO> getWeatherHistoryByLocation(@RequestParam(ApiConstants.QUERY_PARAM_LOCATION)
-                                                                             @Pattern(regexp = "^[a-zA-Z ]+\\,*[ a-zA-Z]{0,3}$")
-                                                                             @NotNull String location
-                                                                                     ) {
+                                                                         @Pattern(regexp = "^[a-zA-Z ]+\\,*[ a-zA-Z]{0,3}$")
+                                                                         @NotNull String location
+    ) {
 
 
         return ResponseEntity.ok().body(

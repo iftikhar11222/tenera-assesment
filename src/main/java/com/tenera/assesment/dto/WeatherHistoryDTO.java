@@ -6,10 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
 @NoArgsConstructor
 public class WeatherHistoryDTO {
 
-    public WeatherHistoryDTO(List<WeatherDTO> history){
+    public WeatherHistoryDTO(List<WeatherDTO> history) {
         this.history = history;
         calculateAverageTemperature();
         calculateAveragePressure();
@@ -29,16 +30,16 @@ public class WeatherHistoryDTO {
     List<WeatherDTO> history;
 
     private void calculateAveragePressure() {
-        if(history!=null && !history.isEmpty()){
-            this.averagePressure=  (int) this.history.stream()
+        if (history != null && !history.isEmpty()) {
+            this.averagePressure = (int) this.history.stream()
                     .mapToInt(WeatherDTO::getPressure)
                     .average().getAsDouble();
         }
     }
 
     private void calculateAverageTemperature() {
-        if(history!=null && !history.isEmpty()){
-            this.averageTemperature=(int) this.history.stream()
+        if (history != null && !history.isEmpty()) {
+            this.averageTemperature = (int) this.history.stream()
                     .mapToInt(WeatherDTO::getTemperature)
                     .average().getAsDouble();
         }

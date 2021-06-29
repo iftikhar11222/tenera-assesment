@@ -12,16 +12,18 @@ import java.util.Map;
 @Configuration
 public class AppConfig {
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
     @Bean("isoCountryCodes")
-    public Map<String,String> isoCountryCodes(){
-       Map<String,String> isoCountryCodesMap = new HashMap<>();
+    public Map<String, String> isoCountryCodes() {
+        Map<String, String> isoCountryCodesMap = new HashMap<>();
         Arrays.stream(Locale.getISOCountries())
-               .forEach(country->{var locale = new Locale("",country);
-               isoCountryCodesMap.put(locale.getISO3Country(),country);
-               });
+                .forEach(country -> {
+                    var locale = new Locale("", country);
+                    isoCountryCodesMap.put(locale.getISO3Country(), country);
+                });
         return isoCountryCodesMap;
 
 

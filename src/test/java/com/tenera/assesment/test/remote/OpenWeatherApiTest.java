@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class OpenWeatherApiTest {
+ class OpenWeatherApiTest {
     @Autowired
     private OpenMapWeatherInfoProvider openMapWeatherInfoProvider;
     @Test

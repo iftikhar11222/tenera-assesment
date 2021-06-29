@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface WeatherService {
 
-     Optional<WeatherDTO> getCurrentWeatherByCity(String location);
+    Optional<WeatherDTO> getCurrentWeatherByCity(String location);
 
     Optional<WeatherHistoryDTO> getWeatherHistoryByLocation(String location);
 }

@@ -28,14 +28,14 @@ public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
 
     @Override
     public String getCurrentWeatherInfo(String latitude, String longitude) {
-        log.info("{longitude :"+ longitude + ",latitude :"+ latitude );
+        log.info("{longitude :" + longitude + ",latitude :" + latitude);
         try {
             var url = weatherApiUrlBuilder(latitude, longitude, "current");
             var rawResponse = restTemplate.getForEntity(url, String.class);
             log.info("response status:" + rawResponse.getStatusCode().value());
             return rawResponse.getBody();
-        }catch (Exception ex){
-            log.error("",ex);
+        } catch (Exception ex) {
+            log.error("", ex);
             throw new ExternalApiException(ex.getMessage());
         }
     }
@@ -43,31 +43,32 @@ public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
 
     @Override
     public String getHistoricalWeatherInfo(String latitude, String longitude) {
-        log.info("{longitude :"+ longitude + ",latitude :"+ latitude );
+        log.info("{longitude :" + longitude + ",latitude :" + latitude);
         try {
             var url = weatherApiUrlBuilder(latitude, longitude, "daily");
             var rawResponse = restTemplate.getForEntity(url, String.class);
             log.info("response status:" + rawResponse.getStatusCode().value());
             return rawResponse.getBody();
-        }catch (Exception ex){
-            log.error("",ex);
-            throw new ExternalApiException("Response Code= "+ex.getMessage());
+        } catch (Exception ex) {
+            log.error("", ex);
+            throw new ExternalApiException("Response Code= " + ex.getMessage());
         }
 
     }
+
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    private String weatherApiUrlBuilder(String latitude, String longitude, String excludeOption){
+    private String weatherApiUrlBuilder(String latitude, String longitude, String excludeOption) {
         return UriComponentsBuilder.newInstance().scheme("https").host(weatherApiBaseUrl)
-                .queryParam("lat",latitude)
-                .queryParam("lon",longitude)
-                .queryParam("exclude",excludeOptions.stream().filter(item->!item.equals(excludeOption)).collect(Collectors.joining(",")))
-                .queryParam("units","metric")
+                .queryParam("lat", latitude)
+                .queryParam("lon", longitude)
+                .queryParam("exclude", excludeOptions.stream().filter(item -> !item.equals(excludeOption)).collect(Collectors.joining(",")))
+                .queryParam("units", "metric")
                 .queryParam("lang", "en")
-                .queryParam("appid",apiId).build().toUriString();
+                .queryParam("appid", apiId).build().toUriString();
     }
 }
 

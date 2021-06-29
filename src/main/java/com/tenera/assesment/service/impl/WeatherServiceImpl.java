@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @Service
 @Slf4j
 public class WeatherServiceImpl implements WeatherService {
@@ -27,29 +28,24 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public Optional<WeatherDTO> getCurrentWeatherByCity(String location) {
 
-       var geoCodeInfoJSON  =coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
-       var geoCodeInfoDTO =
-               geoCodingResponseMapper.
-                       mapJsonToGeoCodingDTO(geoCodeInfoJSON)
-                       .orElseThrow(()->new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
+        var geoCodeInfoJSON = coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
+        var geoCodeInfoDTO =
+                geoCodingResponseMapper.
+                        mapJsonToGeoCodingDTO(geoCodeInfoJSON)
+                        .orElseThrow(() -> new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
 
-       var weatherInfoJSON= weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
-       return IRemoteWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
+        var weatherInfoJSON = weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
+        return IRemoteWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
     }
-
-
-
-
-
 
 
     @Override
     public Optional<WeatherHistoryDTO> getWeatherHistoryByLocation(String location) {
-        var geoCodeInfoJSON  =coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
-        var geoCodeInfoDTO =geoCodingResponseMapper.mapJsonToGeoCodingDTO(geoCodeInfoJSON)
-                .orElseThrow(()->new InvalidCityNameOrCountryCodeException
+        var geoCodeInfoJSON = coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
+        var geoCodeInfoDTO = geoCodingResponseMapper.mapJsonToGeoCodingDTO(geoCodeInfoJSON)
+                .orElseThrow(() -> new InvalidCityNameOrCountryCodeException
                         ("Invalid City name or Country Code"));
-        var weatherInfoJSON= weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(),geoCodeInfoDTO.getLongitude());
+        var weatherInfoJSON = weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
         return IRemoteWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
     }
 
@@ -71,6 +67,7 @@ public class WeatherServiceImpl implements WeatherService {
     public void setWeatherInfoProvider(WeatherInfoProvider weatherInfoProvider) {
         this.weatherInfoProvider = weatherInfoProvider;
     }
+
     @Autowired
     @Lazy
     public void setWeatherResponseMapper(IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper) {
@@ -81,7 +78,7 @@ public class WeatherServiceImpl implements WeatherService {
         var locationSplit = location.split(",");
         var geoCodeInfoDTO = new GeoCodeInfoDTO();
         geoCodeInfoDTO.setCityName(locationSplit[0].trim());
-        if(locationSplit.length > 1){
+        if (locationSplit.length > 1) {
             geoCodeInfoDTO.setCountryCode(locationSplit[1].trim());
         }
         return geoCodeInfoDTO;

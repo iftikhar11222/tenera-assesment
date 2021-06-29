@@ -30,8 +30,8 @@ public class CurrentWeatherController {
 
     @GetMapping("")
     public ResponseEntity<WeatherDTO> getCurrentWeatherByCity(@RequestParam(QUERY_PARAM_LOCATION)
-                                                     @Pattern(regexp = "^[a-zA-Z ]+\\,*[ a-zA-Z]{0,3}$")
-                                                     @NotNull String location) {
+                                                              @Pattern(regexp = "^[a-zA-Z ]+\\,*[ a-zA-Z]{0,3}$")
+                                                              @NotNull String location) {
         return ResponseEntity.ok()
                 .body(weatherService
                         .getCurrentWeatherByCity(location)

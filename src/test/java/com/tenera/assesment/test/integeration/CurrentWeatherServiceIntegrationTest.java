@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class CurrentWeatherServiceIntegrationTest {
+ class CurrentWeatherServiceIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     public static final String LOCATION_BERLIN_DE = "Berlin,DE";

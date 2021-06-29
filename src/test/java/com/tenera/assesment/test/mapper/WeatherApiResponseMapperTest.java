@@ -52,7 +52,7 @@ import java.util.stream.Stream;
         Assertions.assertTrue(historyDTO.isPresent());
         var dto = historyDTO.orElseGet(()->new WeatherHistoryDTO(Collections.EMPTY_LIST));
         Assertions.assertNotEquals(0,dto.getAveragePressure());
-        Assertions.assertTrue(dto.getHistory().size() == 5);
+        Assertions.assertEquals(5,dto.getHistory().size() );
 
 
 

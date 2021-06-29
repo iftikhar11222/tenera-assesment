@@ -17,7 +17,8 @@ import java.util.*;
 @Slf4j
 public class RemoteWeatherApiMapperImpl implements IRemoteWeatherApiResponseMapper {
 
-    private final Set<String> umbrellaWeathers = Set.of("Rain","Dizzle","Thunderstrom");
+    private final Set<String> umbrellaWeathers = Set.of("Rain", "Dizzle", "Thunderstrom");
+
     @Override
     public Optional<WeatherDTO> mapJsonToWeatherDTO(String apiRawResp) {
         try {
@@ -26,14 +27,14 @@ public class RemoteWeatherApiMapperImpl implements IRemoteWeatherApiResponseMapp
                     .get("current");
 
             return Optional.of(getWeatherDTO(currentWeatherData));
-        } catch (JsonProcessingException  | NullPointerException e ) {
-            log.error("error processing",e);
+        } catch (JsonProcessingException | NullPointerException e) {
+            log.error("error processing", e);
             throw new ExternalApiException(e.getMessage());
         }
     }
 
 
-    public  WeatherDTO getWeatherDTO(JsonNode weatherNode) {
+    public WeatherDTO getWeatherDTO(JsonNode weatherNode) {
         var currentWeather = new WeatherDTO();
         currentWeather.setPressure(weatherNode.get("pressure").asInt());
         currentWeather.setTemperature(getTemperatureFromNode(weatherNode.get("temp")));
@@ -43,10 +44,10 @@ public class RemoteWeatherApiMapperImpl implements IRemoteWeatherApiResponseMapp
     }
 
     private int getTemperatureFromNode(JsonNode temperatureNode) {
-        if(temperatureNode instanceof ObjectNode){
+        if (temperatureNode instanceof ObjectNode) {
             return temperatureNode.get("max").asInt();
         }
-        return  temperatureNode.asInt();
+        return temperatureNode.asInt();
 
     }
 
@@ -54,17 +55,17 @@ public class RemoteWeatherApiMapperImpl implements IRemoteWeatherApiResponseMapp
     public Optional<WeatherHistoryDTO> mapJsonToWeatherHistoryDTO(String weatherInfoJSON) {
         try {
             var nodes = new ObjectMapper().readTree(weatherInfoJSON).get("daily");
-            WeatherHistoryDTO historyDTO = getWeatherHistoryDTO(nodes);
+            var historyDTO = getWeatherHistoryDTO(nodes);
             return Optional.of(historyDTO);
-        }catch (JsonProcessingException  | NullPointerException e ) {
-            log.error("error processing",e);
+        } catch (JsonProcessingException | NullPointerException e) {
+            log.error("error processing", e);
             throw new ExternalApiException(e.getMessage());
         }
     }
 
     private WeatherHistoryDTO getWeatherHistoryDTO(JsonNode nodes) {
         var listOfDTOs = new ArrayList<WeatherDTO>();
-        for (int i=0; i<5 ; i++) {
+        for (var i = 0; i < 5; i++) {
             listOfDTOs.add(getWeatherDTO(nodes.get(i)));
         }
         return new WeatherHistoryDTO(listOfDTOs);
