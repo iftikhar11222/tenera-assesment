@@ -14,4 +14,7 @@ public class WeatherDTO {
     private int pressure;
     private int temperature;
     private boolean umbrella;
+
+
+
 }

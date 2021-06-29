@@ -120,10 +120,10 @@ import static org.mockito.Mockito.doThrow;
 
 
     private static Stream<Arguments> getValidJsonDataForCurrentWeather() throws FileNotFoundException {
-        String currentWeatherJson = new Scanner
+        var currentWeatherJson = new Scanner
                 (new File("current-weather.json"))
                 .useDelimiter("\\Z").next();
-        String geoCoordinatesJson = new Scanner
+        var geoCoordinatesJson = new Scanner
                 (new File("coordinates.json"))
                 .useDelimiter("\\z").next();
         return Stream.of(Arguments.arguments(currentWeatherJson,geoCoordinatesJson));

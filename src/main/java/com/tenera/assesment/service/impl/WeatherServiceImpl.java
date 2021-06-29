@@ -80,9 +80,9 @@ public class WeatherServiceImpl implements WeatherService {
     private GeoCodeInfoDTO getCityNameAndCountryCode(String location) {
         var locationSplit = location.split(",");
         var geoCodeInfoDTO = new GeoCodeInfoDTO();
-        geoCodeInfoDTO.setCityName(locationSplit[0]);
+        geoCodeInfoDTO.setCityName(locationSplit[0].trim());
         if(locationSplit.length > 1){
-            geoCodeInfoDTO.setCountryCode(locationSplit[1]);
+            geoCodeInfoDTO.setCountryCode(locationSplit[1].trim());
         }
         return geoCodeInfoDTO;
     }
