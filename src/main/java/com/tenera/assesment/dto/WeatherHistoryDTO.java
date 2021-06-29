@@ -29,6 +29,10 @@ public class WeatherHistoryDTO {
     @Setter
     List<WeatherDTO> history;
 
+    /**
+     * method calculate the average pressure and save it to field
+     *
+     */
     private void calculateAveragePressure() {
         if (history != null && !history.isEmpty()) {
             this.averagePressure = (int) this.history.stream()
@@ -36,7 +40,10 @@ public class WeatherHistoryDTO {
                     .average().getAsDouble();
         }
     }
-
+    /**
+     * method calculate the temperature pressure and save it to field
+     *
+     */
     private void calculateAverageTemperature() {
         if (history != null && !history.isEmpty()) {
             this.averageTemperature = (int) this.history.stream()

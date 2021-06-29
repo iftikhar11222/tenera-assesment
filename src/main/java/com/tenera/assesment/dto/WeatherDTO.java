@@ -9,6 +9,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+/**
+ * POJO to hold the weather info
+ */
 public class WeatherDTO {
 
     private int pressure;

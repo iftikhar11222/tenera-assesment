@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.remote.CoordinatesProvider;
+import com.tenera.assesment.external.LocationProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 class LocationInfoProviderTest {
     @Autowired
-    private CoordinatesProvider coordinatesProvider;
+    private LocationProvider locationProvider;
 
 
     @Test
@@ -31,7 +31,7 @@ class LocationInfoProviderTest {
      void shouldReturnValidResponseIfCorrectCityAndCountryCodeProvided_ISOAlpha2() throws  JsonProcessingException {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder().countryCode("DE")
                 .cityName("Berlin").build();
-        String jsonResult =coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
+        String jsonResult = locationProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
         Assertions.assertNotNull(jsonResult);
         JsonNode locationData = new ObjectMapper().readTree(jsonResult);
         Assertions.assertAll(()-> {
@@ -53,7 +53,7 @@ class LocationInfoProviderTest {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder().countryCode("DEU")
                 .cityName("Berlin").build();
 
-        String jsonResult =coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
+        String jsonResult = locationProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
         Assertions.assertNotNull(jsonResult);
         JsonNode locationData = new ObjectMapper().readTree(jsonResult);
         Assertions.assertAll(()-> {
@@ -74,7 +74,7 @@ class LocationInfoProviderTest {
     void shouldReturnValidResponseIfCorrectCityNameProvide() throws  JsonProcessingException {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder()
                 .cityName("Berlin").build();
-        String jsonResult =coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
+        String jsonResult = locationProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
         Assertions.assertNotNull(jsonResult);
         JsonNode locationData = new ObjectMapper().readTree(jsonResult);
 
@@ -94,7 +94,7 @@ class LocationInfoProviderTest {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder()
                 .cityName("").countryCode("DE").build();
 
-       Throwable exceptionMessage= assertThrows(InvalidCityNameOrCountryCodeException.class,()->coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO));
+       Throwable exceptionMessage= assertThrows(InvalidCityNameOrCountryCodeException.class,()-> locationProvider.getGeocodeInfoByLocation(geoCodeInfoDTO));
        assertEquals("Wrong/Invalid city name or country code.",exceptionMessage.getMessage());
 
 
@@ -105,7 +105,7 @@ class LocationInfoProviderTest {
     void shouldFailWhenCountryCodeIsWrong() throws JsonProcessingException {
         var geoCodeInfoDTO = GeoCodeInfoDTO.builder()
                 .cityName("Berlin").countryCode("GM").build();
-        var resultJson =coordinatesProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
+        var resultJson = locationProvider.getGeocodeInfoByLocation(geoCodeInfoDTO);
         Assertions.assertNotNull(resultJson);
         JsonNode locationData = new ObjectMapper().readTree(resultJson);
 

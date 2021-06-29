@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
 import com.tenera.assesment.exceptions.ExternalApiException;
-import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
+import com.tenera.assesment.mapper.ExternalWeatherApiResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.*;
 
 @Component
 @Slf4j
-public class RemoteWeatherApiMapperImpl implements IRemoteWeatherApiResponseMapper {
+public class WeatherApiMapperImpl implements ExternalWeatherApiResponseMapper {
 
     private final Set<String> umbrellaWeathers = Set.of("Rain", "Dizzle", "Thunderstrom");
 

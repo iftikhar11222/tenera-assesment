@@ -23,6 +23,15 @@ public class WeatherHistoryController {
 
     private WeatherService weatherService;
 
+    /**
+     * ُThe end point serves the request for weather history service
+     *
+     *
+     * @param location
+     * validation pattern requires that request should follow the city name followed by optional
+     * 2-3 digit country code
+     * @return
+     */
     @GetMapping("")
     public ResponseEntity<WeatherHistoryDTO> getWeatherHistoryByLocation(@RequestParam(ApiConstants.QUERY_PARAM_LOCATION)
                                                                          @Pattern(regexp = "^[a-zA-Z ]+\\,*[ a-zA-Z]{0,3}$")

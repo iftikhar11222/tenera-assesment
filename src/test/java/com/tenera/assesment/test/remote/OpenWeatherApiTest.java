@@ -3,7 +3,7 @@ package com.tenera.assesment.test.remote;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.tenera.assesment.remote.impl.OpenMapWeatherInfoProvider;
+import com.tenera.assesment.external.impl.WeatherInfoProviderImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
  class OpenWeatherApiTest {
     @Autowired
-    private OpenMapWeatherInfoProvider openMapWeatherInfoProvider;
+    private WeatherInfoProviderImpl weatherInfoProviderImpl;
     @Test
     @DisplayName("current weather api should  success  valid coordinates passed")
     void testCurrentWeatherShouldSuccessWhenPassingCorrectCoordinates(){
-        String apiResponse =openMapWeatherInfoProvider.getCurrentWeatherInfo("52.5244","13.4105");
+        String apiResponse = weatherInfoProviderImpl.getCurrentWeatherInfo("52.5244","13.4105");
         Assertions.assertNotNull(apiResponse);
         Assertions.assertAll(
                 ()->{
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
     @DisplayName("current weather exteral api should fail when invalid coordinates passed")
     void testCurrentWeatherShouldFailWhenWrongCoordinatesPassed() throws JsonProcessingException {
 
-        Throwable error =assertThrows(RuntimeException.class,()->openMapWeatherInfoProvider.getCurrentWeatherInfo("123.5244","234.4105"));
+        Throwable error =assertThrows(RuntimeException.class,()-> weatherInfoProviderImpl.getCurrentWeatherInfo("123.5244","234.4105"));
         var jsonNode = new ObjectMapper().readTree(error.getMessage());
         Assertions.assertEquals(400,jsonNode.asInt());
 
@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
     @Test
     @DisplayName("test weather history external api should return success with valid coordinates")
     void testWeatherHistoryApiShouldSuccessWhenPassingCorrectCoordinates(){
-        String apiResponse =openMapWeatherInfoProvider.getHistoricalWeatherInfo("52.5244","13.4105");
+        String apiResponse = weatherInfoProviderImpl.getHistoricalWeatherInfo("52.5244","13.4105");
         Assertions.assertNotNull(apiResponse);
         Assertions.assertAll(
                 ()->{
@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
     @Test
     @DisplayName("weather history external api should fail when invalid coordinates passed")
     void testWeatherHistoryShouldFailWhenWrongCoordinatesPassed() throws JsonProcessingException {
-        Throwable error =assertThrows(RuntimeException.class,()->openMapWeatherInfoProvider.getCurrentWeatherInfo("123.5244","234.4105"));
+        Throwable error =assertThrows(RuntimeException.class,()-> weatherInfoProviderImpl.getCurrentWeatherInfo("123.5244","234.4105"));
         var jsonNode = new ObjectMapper().readTree(error.getMessage());
         Assertions.assertEquals(400,jsonNode.asInt());
 

@@ -7,6 +7,10 @@ import lombok.*;
 @Data
 @EqualsAndHashCode
 @Builder
+/**
+ * This pojo is used to hold the coordinate info as open weather api required the
+ * coordinate latitude and longitude to return the weather info
+ */
 public class GeoCodeInfoDTO {
 
     private String latitude;

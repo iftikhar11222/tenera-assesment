@@ -8,6 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * DTO object return to caller in case there is exception
+ * Message hold the cause
+ * code hold the http status code
+ * @See {@link GlobalExceptionHandler}
+ */
 public class ErrorDetails {
 
     private String message;

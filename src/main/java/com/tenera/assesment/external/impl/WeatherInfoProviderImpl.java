@@ -1,7 +1,7 @@
-package com.tenera.assesment.remote.impl;
+package com.tenera.assesment.external.impl;
 
 import com.tenera.assesment.exceptions.ExternalApiException;
-import com.tenera.assesment.remote.WeatherInfoProvider;
+import com.tenera.assesment.external.WeatherInfoProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
+public class WeatherInfoProviderImpl implements WeatherInfoProvider {
 
     private RestTemplate restTemplate;
 
@@ -25,7 +25,12 @@ public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
     @Value("${weather.api.base.url}")
     String weatherApiBaseUrl;
 
-
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @return Raw json string returned from external api for current weather info
+     */
     @Override
     public String getCurrentWeatherInfo(String latitude, String longitude) {
         log.info("{longitude :" + longitude + ",latitude :" + latitude);
@@ -40,7 +45,12 @@ public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
         }
     }
 
-
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @return return the raw json response returned from external api for weather history
+     */
     @Override
     public String getHistoricalWeatherInfo(String latitude, String longitude) {
         log.info("{longitude :" + longitude + ",latitude :" + latitude);
@@ -61,6 +71,13 @@ public class OpenMapWeatherInfoProvider implements WeatherInfoProvider {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * build the uri.configure the request params and return the url in string format
+     * @param latitude
+     * @param longitude
+     * @param excludeOption
+     * @return  Url in string format
+     */
     private String weatherApiUrlBuilder(String latitude, String longitude, String excludeOption) {
         return UriComponentsBuilder.newInstance().scheme("https").host(weatherApiBaseUrl)
                 .queryParam("lat", latitude)

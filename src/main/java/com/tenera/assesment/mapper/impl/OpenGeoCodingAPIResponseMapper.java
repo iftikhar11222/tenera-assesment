@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.mapper.GeoCodingResponseMapper;
+import com.tenera.assesment.mapper.LocationAPIResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Component
 @Slf4j
-public class OpenGeoCodingApiResponseMapper implements GeoCodingResponseMapper {
+public class OpenGeoCodingAPIResponseMapper implements LocationAPIResponseMapper {
     @Override
     public Optional<GeoCodeInfoDTO> mapJsonToGeoCodingDTO(String locationApiResponse) {
         try {

@@ -24,7 +24,11 @@ public class CurrentWeatherController {
     private WeatherService weatherService;
 
     /**
-     * @param location
+     * This end point serves the request for current weather information
+     *
+     * @param location validation of the @location param
+     * Pattern  require the api should be called city followed by optional 2 - 3 digit
+     * country code
      * @return ResponseEntity
      */
 

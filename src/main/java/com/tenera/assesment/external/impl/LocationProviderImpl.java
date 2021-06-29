@@ -1,8 +1,8 @@
-package com.tenera.assesment.remote.impl;
+package com.tenera.assesment.external.impl;
 
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.remote.CoordinatesProvider;
+import com.tenera.assesment.external.LocationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
 @Service
-public class OpenMapLocationProvider implements CoordinatesProvider {
+public class LocationProviderImpl implements LocationProvider {
 
     @Value("${location.api}")
     private String locationAPIBaseUrl;

@@ -4,10 +4,10 @@ import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.mapper.GeoCodingResponseMapper;
-import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
-import com.tenera.assesment.remote.CoordinatesProvider;
-import com.tenera.assesment.remote.WeatherInfoProvider;
+import com.tenera.assesment.mapper.LocationAPIResponseMapper;
+import com.tenera.assesment.mapper.ExternalWeatherApiResponseMapper;
+import com.tenera.assesment.external.LocationProvider;
+import com.tenera.assesment.external.WeatherInfoProvider;
 import com.tenera.assesment.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,45 +20,45 @@ import java.util.Optional;
 @Slf4j
 public class WeatherServiceImpl implements WeatherService {
 
-    private CoordinatesProvider coordinatesProvider;
+    private LocationProvider locationProvider;
     private WeatherInfoProvider weatherInfoProvider;
-    private GeoCodingResponseMapper geoCodingResponseMapper;
-    private IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper;
+    private LocationAPIResponseMapper geoCodingResponseMapper;
+    private ExternalWeatherApiResponseMapper ExternalWeatherApiResponseMapper;
 
     @Override
     public Optional<WeatherDTO> getCurrentWeatherByCity(String location) {
 
-        var geoCodeInfoJSON = coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
+        var geoCodeInfoJSON = locationProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
         var geoCodeInfoDTO =
                 geoCodingResponseMapper.
                         mapJsonToGeoCodingDTO(geoCodeInfoJSON)
                         .orElseThrow(() -> new InvalidCityNameOrCountryCodeException("Invalid City Name or Country Code "));
 
         var weatherInfoJSON = weatherInfoProvider.getCurrentWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
-        return IRemoteWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
+        return ExternalWeatherApiResponseMapper.mapJsonToWeatherDTO(weatherInfoJSON);
     }
 
 
     @Override
     public Optional<WeatherHistoryDTO> getWeatherHistoryByLocation(String location) {
-        var geoCodeInfoJSON = coordinatesProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
+        var geoCodeInfoJSON = locationProvider.getGeocodeInfoByLocation(getCityNameAndCountryCode(location));
         var geoCodeInfoDTO = geoCodingResponseMapper.mapJsonToGeoCodingDTO(geoCodeInfoJSON)
                 .orElseThrow(() -> new InvalidCityNameOrCountryCodeException
                         ("Invalid City name or Country Code"));
         var weatherInfoJSON = weatherInfoProvider.getHistoricalWeatherInfo(geoCodeInfoDTO.getLatitude(), geoCodeInfoDTO.getLongitude());
-        return IRemoteWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
+        return ExternalWeatherApiResponseMapper.mapJsonToWeatherHistoryDTO(weatherInfoJSON);
     }
 
 
     @Autowired
     @Lazy
-    public void setCoordinatesProvider(CoordinatesProvider coordinatesProvider) {
-        this.coordinatesProvider = coordinatesProvider;
+    public void setCoordinatesProvider(LocationProvider locationProvider) {
+        this.locationProvider = locationProvider;
     }
 
     @Autowired
     @Lazy
-    public void setGeoCodingResponseMapper(GeoCodingResponseMapper geoCodingResponseMapper) {
+    public void setGeoCodingResponseMapper(LocationAPIResponseMapper geoCodingResponseMapper) {
         this.geoCodingResponseMapper = geoCodingResponseMapper;
     }
 
@@ -70,8 +70,8 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Autowired
     @Lazy
-    public void setWeatherResponseMapper(IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper) {
-        this.IRemoteWeatherApiResponseMapper = IRemoteWeatherApiResponseMapper;
+    public void setWeatherResponseMapper(ExternalWeatherApiResponseMapper ExternalWeatherApiResponseMapper) {
+        this.ExternalWeatherApiResponseMapper = ExternalWeatherApiResponseMapper;
     }
 
     private GeoCodeInfoDTO getCityNameAndCountryCode(String location) {

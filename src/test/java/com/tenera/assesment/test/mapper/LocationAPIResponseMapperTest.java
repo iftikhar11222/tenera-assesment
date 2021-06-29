@@ -2,9 +2,8 @@ package com.tenera.assesment.test.mapper;
 
 import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.mapper.GeoCodingResponseMapper;
+import com.tenera.assesment.mapper.LocationAPIResponseMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,14 +19,13 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class GeoCodingResponseMapperTest {
+class LocationAPIResponseMapperTest {
 
-    @Autowired private GeoCodingResponseMapper responseMapper;
+    @Autowired private LocationAPIResponseMapper responseMapper;
 
     @ParameterizedTest
     @MethodSource("getGeoCodingJson")

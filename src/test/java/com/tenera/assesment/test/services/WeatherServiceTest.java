@@ -4,10 +4,10 @@ import com.tenera.assesment.dto.GeoCodeInfoDTO;
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
 import com.tenera.assesment.exceptions.InvalidCityNameOrCountryCodeException;
-import com.tenera.assesment.mapper.GeoCodingResponseMapper;
-import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
-import com.tenera.assesment.remote.CoordinatesProvider;
-import com.tenera.assesment.remote.WeatherInfoProvider;
+import com.tenera.assesment.mapper.LocationAPIResponseMapper;
+import com.tenera.assesment.mapper.ExternalWeatherApiResponseMapper;
+import com.tenera.assesment.external.LocationProvider;
+import com.tenera.assesment.external.WeatherInfoProvider;
 import com.tenera.assesment.service.WeatherService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +39,10 @@ import static org.mockito.Mockito.doThrow;
  class WeatherServiceTest {
 
     @Autowired  private WeatherService weatherService;
-    @MockBean private CoordinatesProvider coordinatesProvider;
+    @MockBean private LocationProvider locationProvider;
     @MockBean private WeatherInfoProvider weatherInfoProvider;
-    @MockBean private GeoCodingResponseMapper geoCodingResponseMapper;
-    @MockBean private IRemoteWeatherApiResponseMapper IRemoteWeatherApiResponseMapper;
+    @MockBean private LocationAPIResponseMapper geoCodingResponseMapper;
+    @MockBean private ExternalWeatherApiResponseMapper ExternalWeatherApiResponseMapper;
 
     @DisplayName("should return current weather data when valid location is passed")
     @ParameterizedTest
@@ -50,10 +50,10 @@ import static org.mockito.Mockito.doThrow;
     void testTestCurrentWeatherShouldReturnValidResponse(String weatherJson, String locationJson){
         GeoCodeInfoDTO coordinateInfo = GeoCodeInfoDTO.builder().cityName("Berlin").countryCode("DE").build();
         WeatherDTO weatherDTO = new WeatherDTO(1005,100,false);
-        doReturn(locationJson).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doReturn(locationJson).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         doReturn(Optional.of(coordinateInfo)).when(geoCodingResponseMapper).mapJsonToGeoCodingDTO(locationJson);
         doReturn(weatherJson).when(weatherInfoProvider).getCurrentWeatherInfo(coordinateInfo.getLatitude(),coordinateInfo.getLongitude());
-        doReturn(Optional.of(weatherDTO)).when(IRemoteWeatherApiResponseMapper).mapJsonToWeatherDTO(weatherJson);
+        doReturn(Optional.of(weatherDTO)).when(ExternalWeatherApiResponseMapper).mapJsonToWeatherDTO(weatherJson);
         Optional<WeatherDTO> resultDTO = weatherService.getCurrentWeatherByCity("Berlin,DE");
         assertTrue(resultDTO.isPresent());
         assertSame(weatherDTO,resultDTO.get());
@@ -68,10 +68,10 @@ import static org.mockito.Mockito.doThrow;
         var cityName = "Berlin";
         var countryNameWrong = "ADZ";
         GeoCodeInfoDTO coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityNameWrong).countryCode(countryName).build();
-        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getCurrentWeatherByCity(cityNameWrong+","+countryName));
          coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityName).countryCode(countryNameWrong).build();
-        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         Throwable ex =  assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getCurrentWeatherByCity(cityName+","+countryNameWrong));
         assertEquals("Wrong City Name or Country Code",ex.getMessage());
     }
@@ -83,10 +83,10 @@ import static org.mockito.Mockito.doThrow;
     void testTestHistoricalWeatherShouldReturnValidResponse(String weatherJson, String locationJson,List<WeatherDTO> weatherDTOList){
         var coordinateInfo = GeoCodeInfoDTO.builder().cityName("Berlin").countryCode("DE").build();
         var weatherDTO = new WeatherHistoryDTO(weatherDTOList);
-        doReturn(locationJson).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doReturn(locationJson).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         doReturn(Optional.of(coordinateInfo)).when(geoCodingResponseMapper).mapJsonToGeoCodingDTO(locationJson);
         doReturn(weatherJson).when(weatherInfoProvider).getHistoricalWeatherInfo(coordinateInfo.getLatitude(),coordinateInfo.getLongitude());
-        doReturn(Optional.of(weatherDTO)).when(IRemoteWeatherApiResponseMapper).mapJsonToWeatherHistoryDTO(weatherJson);
+        doReturn(Optional.of(weatherDTO)).when(ExternalWeatherApiResponseMapper).mapJsonToWeatherHistoryDTO(weatherJson);
 
         Optional<WeatherHistoryDTO> resultDTO = weatherService.getWeatherHistoryByLocation("Berlin,DE");
         assertTrue(resultDTO.isPresent());
@@ -104,10 +104,10 @@ import static org.mockito.Mockito.doThrow;
         var cityName = "Berlin";
         var countryNameWrong = "ADZ";
         GeoCodeInfoDTO coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityNameWrong).countryCode(countryName).build();
-        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getWeatherHistoryByLocation(cityNameWrong+","+countryName));
         coordinateInfo = GeoCodeInfoDTO.builder().cityName(cityName).countryCode(countryNameWrong).build();
-        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(coordinatesProvider).getGeocodeInfoByLocation(coordinateInfo);
+        doThrow(new InvalidCityNameOrCountryCodeException("Wrong City Name or Country Code")).when(locationProvider).getGeocodeInfoByLocation(coordinateInfo);
         Throwable ex =  assertThrows(InvalidCityNameOrCountryCodeException.class,()->weatherService.getWeatherHistoryByLocation(cityName+","+countryNameWrong));
         assertEquals("Wrong City Name or Country Code",ex.getMessage());
     }

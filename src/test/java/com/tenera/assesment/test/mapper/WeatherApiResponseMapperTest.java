@@ -2,7 +2,7 @@ package com.tenera.assesment.test.mapper;
 
 import com.tenera.assesment.dto.WeatherDTO;
 import com.tenera.assesment.dto.WeatherHistoryDTO;
-import com.tenera.assesment.mapper.IRemoteWeatherApiResponseMapper;
+import com.tenera.assesment.mapper.ExternalWeatherApiResponseMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -13,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -22,7 +20,7 @@ import java.util.stream.Stream;
  class WeatherApiResponseMapperTest {
 
    @Autowired
-   private IRemoteWeatherApiResponseMapper apiResponseMapper;
+   private ExternalWeatherApiResponseMapper apiResponseMapper;
    @ParameterizedTest
    @MethodSource("getJsonDataForCurrentWeatherCall")
    void testShouldSuccessWhenMappingValidCurrentRequestResponse(String currentWeatherDetails){
