@@ -1,0 +1,6 @@
+projectKey=tenera-assesments
+serverUrl=http://localhost:9000
+serverVersion=8.9.0.43852
+dashboardUrl=http://localhost:9000/dashboard?id=tenera-assesments
+ceTaskId=AXpWRryvEQ3XAChi4NJY
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXpWRryvEQ3XAChi4NJY

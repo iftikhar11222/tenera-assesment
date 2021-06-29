@@ -1,0 +1,11 @@
+com/tenera/assesment/TeneraAssesmentApplicationTests.class
+com/tenera/assesment/test/mapper/WeatherApiResponseMapperTest.class
+com/tenera/assesment/test/remote/OpenWeatherApiTest.class
+com/tenera/assesment/test/controllers/WeatherHistoryControllerTest.class
+com/tenera/assesment/test/integeration/CurrentWeatherServiceIntegrationTest.class
+com/tenera/assesment/test/integeration/WeatherHistoryIntegrationTest.class
+com/tenera/assesment/test/controllers/ApiConstants.class
+com/tenera/assesment/test/mapper/GeoCodingResponseMapperTest.class
+com/tenera/assesment/test/services/WeatherServiceTest.class
+com/tenera/assesment/test/remote/LocationInfoProviderTest.class
+com/tenera/assesment/test/controllers/CurrentWeatherControllerTest.class
