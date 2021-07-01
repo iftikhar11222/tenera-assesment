@@ -1,6 +1,4 @@
 # tenera-assesment
-# tenera-assesment
-assesment weather api
 
 To Run it Locally kindly follow the below steps
 
@@ -13,7 +11,7 @@ http://localhost:port/weather-resource/weather/history?location=Islamabad,PK
 http://localhost:port/weather-resource/weather/current?location=Islamabad,PK
 
 
-Application Architecture (Traditional Onion Architecture).
+**Application Architecture** (Traditional Onion Architecture).
 
 Controller Layer: (com.tenera.assessment.controllers)
 This layer contains two controller classes.
@@ -26,7 +24,7 @@ response in json format.
 
 
 
-Service Layer: (com.tenera.assessment.services)
+**Service Layer**: (com.tenera.assessment.services)
 It has two methods getCurrentWeatherHistory and getCurrentWeatherByCity and getWeatherHistoryByLocation. Both the methods first call the getGeocodeInfoByLocation method
 of LocationProvider class which takes the GeoCodingInfo.java as parameter which contains a city name and optional country code (2-3) digit and call the below url to obtain the coordinates' information about the city. Next it passes the same coordinates to the WeatherInfoProvider to get the information about the weather
 both the services' response are mapped by separate mapper classes, and it throws an exception which in case if some error occurred during the
@@ -35,7 +33,7 @@ processing or in external response it is passed to GlobalExceptionHandle control
 
 
 
-Data Access Layer (com.tenera.assessment.external):
+**Data Access Layer**: (com.tenera.assessment.external):
 It contains to components LocationProvider and WeatherInfoProvider. Both component calls the external open weather (check below url).
 During the development I realize that when the open weather api  called with city and country name for current or weather history it returns
 different response format which could add extra complexity in when mapping the response So instead of calling the weather info api with city and
@@ -46,7 +44,7 @@ https://api.openweathermap.org/data/2.5/onecall?lat=13.4105&lon=52.5244&exclude=
 (Url for getting the weather info )
 http://api.openweathermap.org/geo/1.0/direct?q=London,,GB&limit=1&appid=49112a81a18efd77dd17b31eb756ce9d
 
-Error Handling:
+**Error Handling:**
             GlobalExceptionhandler.java is spring controller advic component which catch any exception thrown in application identify the 
 exception type and returns the error response.
 
